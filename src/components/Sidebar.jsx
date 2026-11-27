@@ -1,3 +1,5 @@
+import { LiaPlusSolid, LiaTimesSolid, LiaUsersSolid } from 'react-icons/lia';
+
 export default function Sidebar({
   isOpen,
   onClose,
@@ -36,18 +38,7 @@ export default function Sidebar({
             className="rounded p-1 text-[#777777] hover:bg-[#EAEAE6] hover:text-[#222222] lg:hidden"
             aria-label="Close navigation"
           >
-            <svg
-              className="h-4 w-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.75"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M18 6 6 18" />
-              <path d="m6 6 12 12" />
-            </svg>
+            <LiaTimesSolid className="h-4 w-4" aria-hidden="true" />
           </button>
         </div>
 
@@ -65,20 +56,7 @@ export default function Sidebar({
             className="flex w-full items-center justify-between rounded border border-[#E5E5E5] bg-[#FFFFFF] px-2.5 py-2 text-left text-sm font-medium text-[#222222]"
           >
             <span className="flex items-center gap-2">
-              <svg
-                className="h-4 w-4 text-[#222222]"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.75"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-              </svg>
+              <LiaUsersSolid className="h-4 w-4 text-[#222222]" aria-hidden="true" />
               Users
             </span>
             <span className="text-xs font-normal tabular-nums text-[#777777]">
@@ -94,18 +72,7 @@ export default function Sidebar({
             }}
             className="flex w-full items-center gap-2 rounded px-2.5 py-2 text-left text-sm text-[#555555] hover:bg-[#EFEFEC] hover:text-[#222222]"
           >
-            <svg
-              className="h-4 w-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.75"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M12 5v14" />
-              <path d="M5 12h14" />
-            </svg>
+            <LiaPlusSolid className="h-4 w-4" aria-hidden="true" />
             New User
           </button>
         </nav>

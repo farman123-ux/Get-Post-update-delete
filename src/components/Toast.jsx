@@ -1,3 +1,9 @@
+import {
+  LiaCheckSolid,
+  LiaExclamationCircleSolid,
+  LiaTimesSolid,
+} from 'react-icons/lia';
+
 export default function Toast({ notification, onDismiss }) {
   if (!notification) {
     return null;
@@ -16,31 +22,9 @@ export default function Toast({ notification, onDismiss }) {
     >
       <div className="flex items-center gap-2.5">
         {isError ? (
-          <svg
-            className="h-4 w-4 shrink-0"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.75"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <path d="M12 8v4" />
-            <path d="M12 16h.01" />
-          </svg>
+          <LiaExclamationCircleSolid className="h-4 w-4 shrink-0" aria-hidden="true" />
         ) : (
-          <svg
-            className="h-4 w-4 shrink-0"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.75"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M20 6 9 17l-5-5" />
-          </svg>
+          <LiaCheckSolid className="h-4 w-4 shrink-0" aria-hidden="true" />
         )}
         <span>{notification.message}</span>
       </div>
@@ -51,18 +35,7 @@ export default function Toast({ notification, onDismiss }) {
         className="rounded p-1 opacity-75 hover:opacity-100"
         aria-label="Dismiss message"
       >
-        <svg
-          className="h-3.5 w-3.5"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M18 6 6 18" />
-          <path d="m6 6 12 12" />
-        </svg>
+        <LiaTimesSolid className="h-3.5 w-3.5" aria-hidden="true" />
       </button>
     </div>
   );

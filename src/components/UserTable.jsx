@@ -1,14 +1,5 @@
-export default function UserTable({
-  users,
-  isLoading,
-  error,
-  searchQuery,
-  onRetry,
-  onClearSearch,
-  onAddUser,
-  onEditUser,
-  onDeleteUser,
-}) {
+export default function UserTable({users,isLoading,error,searchQuery,onRetry,onClearSearch,onAddUser,onEditUser,onDeleteUser,})
+ {
   if (isLoading && users.length === 0) {
     return (
       <div className="rounded border border-[#E5E5E5] bg-[#FFFFFF] px-6 py-14 text-center">

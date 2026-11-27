@@ -1,3 +1,5 @@
+import { LiaBarsSolid, LiaSyncAltSolid } from 'react-icons/lia';
+
 export default function TopBar({
   onOpenSidebar,
   onRefresh,
@@ -13,19 +15,7 @@ export default function TopBar({
           className="rounded border border-[#E5E5E5] p-1.5 text-[#222222] hover:bg-[#F7F7F5] lg:hidden"
           aria-label="Open navigation"
         >
-          <svg
-            className="h-4 w-4"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.75"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M3 12h18" />
-            <path d="M3 6h18" />
-            <path d="M3 18h18" />
-          </svg>
+          <LiaBarsSolid className="h-4 w-4" aria-hidden="true" />
         </button>
 
         <div className="flex items-center gap-2 text-sm">
@@ -46,20 +36,12 @@ export default function TopBar({
           disabled={isLoading}
           className="inline-flex items-center gap-1.5 rounded border border-[#E5E5E5] bg-[#FFFFFF] px-2.5 py-1.5 text-xs font-medium text-[#222222] hover:bg-[#F7F7F5] disabled:opacity-50"
         >
-          <svg
+          <LiaSyncAltSolid
             className={`h-3.5 w-3.5 text-[#777777] ${
               isLoading ? 'animate-spin' : ''
             }`}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.75"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
-            <path d="M21 3v5h-5" />
-          </svg>
+            aria-hidden="true"
+          />
           {isLoading ? 'Syncing' : 'Refresh'}
         </button>
       </div>

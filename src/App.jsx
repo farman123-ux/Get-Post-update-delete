@@ -9,14 +9,15 @@ import UserTable from './components/UserTable';
 
 const API_URL = 'https://jsonplaceholder.typicode.com/users';
 
+// Convert API user data into a simple flat object
 function formatUser(user) {
   return {
     id: user.id,
     name: user.name || '',
     email: user.email || '',
     phone: user.phone || '',
-    company: user.company?.name || user.company || '',
-    city: user.address?.city || user.city || '',
+    company: user.company?.name || '',
+    city: user.address?.city || '',
   };
 }
 
@@ -32,42 +33,43 @@ export default function App() {
   const [deletingUser, setDeletingUser] = useState(null);
   const [toast, setToast] = useState(null);
 
-  useEffect(() => {
-    async function loadUsers() {
-      try {
-        const res = await axios.get(API_URL);
-        setUsers(res.data.map(formatUser));
-      } catch {
-        setError('Failed to load users. Please check your connection.');
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadUsers();
-  }, []);
-
-  useEffect(() => {
-    if (!toast || toast.type !== 'success') return;
-    const timer = setTimeout(() => setToast(null), 4000);
-    return () => clearTimeout(timer);
-  }, [toast]);
-
-  async function handleRefresh() {
+  // Fetch users (used on first load and when clicking Refresh)
+  async function fetchUsers(showToast = false) {
     setLoading(true);
     setError('');
+
     try {
       const res = await axios.get(API_URL);
-      setUsers(res.data.map(formatUser));
-      setToast({ type: 'success', message: 'User list refreshed.' });
+      const formattedUsers = res.data.map(formatUser);
+      setUsers(formattedUsers);
+
+      if (showToast) {
+        setToast({ type: 'success', message: 'User list refreshed.' });
+      }
     } catch {
       const msg = 'Failed to load users. Please check your connection.';
       setError(msg);
-      setToast({ type: 'error', message: msg });
+
+      if (showToast) {
+        setToast({ type: 'error', message: msg });
+      }
     } finally {
       setLoading(false);
     }
   }
+
+  // Load users when the page opens
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  // Auto-hide success toast after 4 seconds
+  useEffect(() => {
+    if (toast?.type === 'success') {
+      const timer = setTimeout(() => setToast(null), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
 
   function openAddModal() {
     setEditingUser(null);
@@ -84,61 +86,46 @@ export default function App() {
     setEditingUser(null);
   }
 
+  // Add or Edit a user
   async function handleSaveUser(formData) {
-    const payload = {
+    const cleanData = {
       name: formData.name.trim(),
       email: formData.email.trim(),
       phone: formData.phone.trim(),
-      company: { name: formData.company.trim() },
-      address: { city: formData.city.trim() },
+      company: formData.company.trim(),
+      city: formData.city.trim(),
     };
 
     if (editingUser) {
-      const res = await axios.patch(`${API_URL}/${editingUser.id}`, payload);
-      const updatedUser = formatUser({
-        ...payload,
-        ...res.data,
-        id: editingUser.id,
-      });
+      // Edit existing user
+      await axios.patch(`${API_URL}/${editingUser.id}`, cleanData);
 
-      setUsers((prev) =>
-        prev.map((u) => (u.id === editingUser.id ? updatedUser : u))
-      );
-      closeFormModal();
-      setToast({
-        type: 'success',
-        message: `${updatedUser.name} has been updated.`,
-      });
-      return;
+      const updatedUser = { ...cleanData, id: editingUser.id };
+      setUsers(users.map((u) => (u.id === editingUser.id ? updatedUser : u)));
+      setToast({ type: 'success', message: "the form has been updated." });
+    } else {
+      // Add new user (Date.now() gives a simple unique ID)
+      await axios.post(API_URL, cleanData);
+
+      const newUser = { ...cleanData, id: Date.now() };
+      setUsers([...users, newUser]);
+      setToast({ type: 'success', message: "the form has been update." });
     }
 
-    const res = await axios.post(API_URL, payload);
-    const createdUser = formatUser({ ...payload, ...res.data });
-
-    // JSONPlaceholder always returns id 11 on POST, so ensure a unique ID in local state.
-    const idExists = users.some((u) => u.id === createdUser.id);
-    const nextId = idExists
-      ? Math.max(0, ...users.map((u) => Number(u.id) || 0)) + 1
-      : createdUser.id;
-
-    setUsers((prev) => [...prev, { ...createdUser, id: nextId }]);
     closeFormModal();
-    setToast({
-      type: 'success',
-      message: `${createdUser.name} has been added.`,
-    });
   }
 
+  // Delete a user
   async function handleDeleteUser(user) {
     await axios.delete(`${API_URL}/${user.id}`);
-    setUsers((prev) => prev.filter((u) => u.id !== user.id));
+    setUsers(users.filter((u) => u.id !== user.id));
     setDeletingUser(null);
-    setToast({ type: 'success', message: `${user.name} has been deleted.` });
+    setToast({ type: 'success', message: "the form has been deleted." });
   }
 
+  // Filter users by search text
+  const query = search.trim().toLowerCase();
   const filteredUsers = users.filter((user) => {
-    const query = search.trim().toLowerCase();
-    if (!query) return true;
     return (
       user.name.toLowerCase().includes(query) ||
       user.email.toLowerCase().includes(query)
@@ -158,7 +145,7 @@ export default function App() {
       <div className="flex min-w-0 flex-1 flex-col">
         <TopBar
           onOpenSidebar={() => setSidebarOpen(true)}
-          onRefresh={handleRefresh}
+          onRefresh={() => fetchUsers(true)}
           isLoading={loading}
           totalUsers={users.length}
         />
@@ -219,7 +206,7 @@ export default function App() {
             isLoading={loading}
             error={error}
             searchQuery={search}
-            onRetry={handleRefresh}
+            onRetry={() => fetchUsers(true)}
             onClearSearch={() => setSearch('')}
             onAddUser={openAddModal}
             onEditUser={openEditModal}

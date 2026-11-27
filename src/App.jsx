@@ -9,7 +9,6 @@ import UserTable from './components/UserTable';
 
 const API_URL = 'https://jsonplaceholder.typicode.com/users';
 
-// Convert API user data into a simple flat object
 function formatUser(user) {
   return {
     id: user.id,
@@ -33,7 +32,6 @@ export default function App() {
   const [deletingUser, setDeletingUser] = useState(null);
   const [toast, setToast] = useState(null);
 
-  // Fetch users (used on first load and when clicking Refresh)
   async function fetchUsers(showToast = false) {
     setLoading(true);
     setError('');
@@ -58,12 +56,10 @@ export default function App() {
     }
   }
 
-  // Load users when the page opens
   useEffect(() => {
     fetchUsers();
   }, []);
 
-  // Auto-hide success toast after 4 seconds
   useEffect(() => {
     if (toast?.type === 'success') {
       const timer = setTimeout(() => setToast(null), 4000);
@@ -86,7 +82,6 @@ export default function App() {
     setEditingUser(null);
   }
 
-  // Add or Edit a user
   async function handleSaveUser(formData) {
     const cleanData = {
       name: formData.name.trim(),
@@ -97,14 +92,12 @@ export default function App() {
     };
 
     if (editingUser) {
-      // Edit existing user
       await axios.patch(`${API_URL}/${editingUser.id}`, cleanData);
 
       const updatedUser = { ...cleanData, id: editingUser.id };
       setUsers(users.map((u) => (u.id === editingUser.id ? updatedUser : u)));
       setToast({ type: 'success', message: "the form has been updated." });
     } else {
-      // Add new user (Date.now() gives a simple unique ID)
       await axios.post(API_URL, cleanData);
 
       const newUser = { ...cleanData, id: Date.now() };
@@ -115,7 +108,6 @@ export default function App() {
     closeFormModal();
   }
 
-  // Delete a user
   async function handleDeleteUser(user) {
     await axios.delete(`${API_URL}/${user.id}`);
     setUsers(users.filter((u) => u.id !== user.id));
@@ -123,7 +115,6 @@ export default function App() {
     setToast({ type: 'success', message: "the form has been deleted." });
   }
 
-  // Filter users by search text
   const query = search.trim().toLowerCase();
   const filteredUsers = users.filter((user) => {
     return (
@@ -188,14 +179,12 @@ export default function App() {
                   onClick={() => setSearch('')}
                   className="absolute top-1/2 right-2.5 -translate-y-1/2 text-xs text-[#777777] hover:text-[#222222]"
                   aria-label="Clear search"
-                >
-                  ✕
-                </button>
+                >✕</button>
               )}
             </div>
 
             {search.trim() && (
-              <p className="text-xs text-[#777777]">
+              <p className="text-xs  text-[#777777]">
                 Showing {filteredUsers.length} of {users.length} users
               </p>
             )}
